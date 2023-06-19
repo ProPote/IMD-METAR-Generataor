@@ -1,0 +1,39 @@
+def main():
+    pass
+
+if __name__ == '__main__':
+    main()
+
+import pandas as pd
+file = r'C:\Users\hp\OneDrive\Desktop\IMD_PS1\metar_data.csv'
+df = pd.read_csv(file, header = None)
+date = input('enter date (DD): ')
+time = input('enter time in 24 hour format (HH:MM:SS): ')
+row = 0
+#to identify appropriate row with required time:
+while row < 25:
+    if time == df.loc[row][3]:
+        break
+    else:
+        row += 1
+
+#date and time component
+modtime = time[0:5]
+mod1time = modtime[0:2]
+mod2time = modtime[3:5]
+finaltime = mod1time + mod2time
+metartimedate = date + finaltime + 'Z'
+
+#pressure component
+pressure = 'Q' + str(int(df.loc[row][33]))
+
+
+#temp and dew point temp component
+#temp = str(df.loc[row][temp_index])
+#dew_pt = str(df.loc[row][dew_pt_index])
+#finaltempdew = temp + '/' + dew
+
+#wind direction and speed component
+#wind_dir = str(df.loc[row][wind_dir_index])
+#wind_sp = str(df.loc[row][wind_sp_index])
+#windfinal = wind_dir + wind_sp + 'KT'
