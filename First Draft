@@ -1,0 +1,60 @@
+#-------------------------------------------------------------------------------
+# Name:        module1
+# Purpose:
+#
+# Author:      User
+#
+# Created:     14/06/2023
+# Copyright:   (c) User 2023
+# Licence:     <your licence>
+#-------------------------------------------------------------------------------
+
+#code to read csv file
+import pandas as pd
+file=r'D:\Python Codes\Data_mod.csv'
+df = pd.read_csv(file)
+#-------------------------------------------------------------------------------
+
+#declaring all the components of the final METAR Report
+METAR=""
+report=" "
+typ = "METAR"
+#-------------------------------------------------------------------------------
+
+#Taking the timestamp for which the user wants the METAR
+time=input("Enter the time")
+#Finding the row in the given data which has to be accessed
+row=0
+for i in range(25):
+    if time==df.iloc[i,3]:
+        row=i
+#-------------------------------------------------------------------------------
+
+#Taking the four terms of cloud cover
+cloud_cover=input("Enter the 4 terms of cloud cover.")
+#num_rows = df.shape[0]
+#print(num_rows)
+cell_value = df.iloc[row, 28] # cell_value = df.iloc[row_index, column_index]
+pressure=('Q -',cell_value)
+#-------------------------------------------------------------------------------
+
+#status term which comprises of date,and time in zulu
+time1=""
+date=""
+def status():
+    runway=(df.iloc[row,2])
+    if time[1]==':':time1='0'+time[0]+time[2]+time[3]
+    else:time1=time[0]+time[1]+time[3]+time[4]
+    #print(time1)
+
+    check=df.iloc[row,4]
+    if check[1]=='-':date='0'+check[0]
+    else: date=check[0]+check[1]
+    #print(date)
+    return date+time1
+#-------------------------------------------------------------------------------
+
+report=report+status()+'Z'
+print(typ+report+' '+cloud_cover)
+#length=len(time)
+
