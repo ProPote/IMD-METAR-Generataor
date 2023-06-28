@@ -1,0 +1,117 @@
+from tkinter import *
+from inputimeout import inputimeout
+cloudcover=""
+C1=""
+C2=""
+C3=""
+C4=""
+#def frontend_initial():
+def backend():
+    import socket
+    UDP_IP = "192.168.103.150"
+    UDP_PORT = 5000
+    sock = socket.socket(socket.AF_INET, # Internet
+    socket.SOCK_DGRAM) # UDP
+    sock.bind((UDP_IP, UDP_PORT))
+    while True:
+        data, addr = sock.recvfrom(1024) # buffer size is 1024 bytes
+        print("received message: %s" % data)
+
+
+    runway_number=data[10:12]
+    GST_Time=data[22:30]
+    Date=data[31:42]
+    WS_10_min=data[63:66]
+    WD_10_min=data[86:88]
+    Hum_10_min=data[104:106]
+    Temp_10_min=data[131:136]
+    DP_10_min=data[155:160]
+    Pres_10_min=data[183:188]
+    QNH_10_min=data[217:223]
+    QFE_10_min=data[246:251]
+    #print(runway_number)
+
+    #declaring all the components of the final METAR Report
+    METAR=""
+    report=" "
+    typ = "METAR"
+    #---------------------------------------------------------------------------
+    #Taking the timestamp for which the user wants the METAR
+    #Finding the row in the given data which has to be accessed
+    #row=0
+    #for i in range(25):
+    #    if time==df.iloc[i,3]:
+    #        row=i
+    #---------------------------------------------------------------------------
+
+    #Taking the four terms of cloud cover
+    #cell_value = df.iloc[row, 28] # cell_value = df.iloc[row_index, column_index]
+    #pressure=('Q -',cell_value)
+    #---------------------------------------------------------------------------
+
+    #status term which comprises of date,and time in zulu
+    time1=""
+    date=""
+    def status():
+    #    runway=(df.iloc[row,2])
+        time_used=GST_Time
+        if time_used[3]==':':time1='0'+time_used[2]+time_used[4]+time_used[5]
+        else:time1=time_used[2]+time_used[3]+time_used[5]+time_used[6]
+        check=Date
+        if check[1]=='-':date='0'+check[0]
+        else: date=check[0]+check[1]
+        #print(date)
+        return date+time1
+    #---------------------------------------------------------------------------
+    #temp and dew point temp component
+    temp =Temp_10_min
+    dew_pt = DP_10_min
+    finaltempdew = temp + '/' + dew_pt
+
+    report=report+status()+'Z'
+    return typ+report+' '+cloud_cover
+
+#Front_End
+
+import time
+while True:
+    root=Tk()
+    myLabel=Label(root,text="Enter the time stamp.")
+    myLabel.pack()
+    e=Entry(root)
+    e.pack()
+    time=e.get()
+    #function to proceed after enterinf the timestamp
+    cloudcover=""
+    output=Label(root,text="Enter the four cloud terms")
+    def stdop():
+        C1=""
+        C2=""
+        C3=""
+        C4=""
+        myLabel=Label(root,text=backend())
+        myLabel.pack()
+    output.after(300000,stdop)
+    output.pack()
+    output.pack()
+    e2=Entry(root)
+    e2.pack()
+    C1=e2.get()
+    e3=Entry(root)
+    e3.pack()
+    C2=e3.get()
+    e4=Entry(root)
+    e4.pack()
+    C3=e4.get()
+    e5=Entry(root)
+    e5.pack()
+    C5=e5.get()
+    cloudcover=C1+C2+C3+C4
+    def onclic():
+        myLabel=Label(root,text=backend())
+        myLabel.pack()
+    new_button=Button(root,text="OK",command=onclic)
+    new_button.pack()
+    root.mainloop()
+    back_end_final()
+    time.sleep(1500)
