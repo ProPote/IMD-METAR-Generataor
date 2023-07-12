@@ -8,7 +8,7 @@ import multiprocessing
 #FINAL_METAR="ABCD"
 def backend():
     import socket
-    UDP_IP = "192.168.103.150"
+    UDP_IP = "192.168.103.93"
     UDP_PORT = 5000
     sock = socket.socket(socket.AF_INET, # Internet
     socket.SOCK_DGRAM) # UDP
@@ -97,6 +97,7 @@ def backend():
                     Date=data2[29:31]
                     WS_10_min=data2[61:64]
                     WD_10_min=data2[86:88]
+                    print(WD_10_min)
                     Hum_10_min=data2[107:109]
                     Temp_10_min=data2[130:132]
                     DP_10_min=data2[154:156]
