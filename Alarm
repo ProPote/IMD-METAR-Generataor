@@ -1,0 +1,143 @@
+from tkinter import *
+import time
+wsc=""
+wdc=""
+hc=""
+tc=""
+DPc=""
+pc=""
+qnc=""
+qfc=""
+while True:
+    from playsound import playsound
+    import socket
+    UDP_IP = "192.168.103.93"
+    UDP_PORT = 5000
+    sock = socket.socket(socket.AF_INET, # Internet
+    socket.SOCK_DGRAM) # UDP
+    sock.bind((UDP_IP, UDP_PORT))
+    data, addr = sock.recvfrom(1024) # buffer size is 1024 bytes
+    data2=data.decode('utf-8')
+    if data2[0]=="V":
+
+        print("Entered")
+        #Getting all the terms of the string
+        runway_number=data2[8:10]
+        GST_Time=data2[20:28]
+        Date=data2[29:31]
+        WS_10_min=data2[61:64]
+        WD_10_min=data2[83:86]
+        Hum_10_min=data2[107:109]
+        Temp_10_min=data2[130:132]
+        DP_10_min=data2[154:156]
+        Pres_10_min=data2[185:190]
+        QNH_10_min=data2[215:219]
+        QFE_10_min=data2[237:240]
+
+        '''global wsc
+        global wdc
+        global hc
+        global tc
+        global DPc
+        global pc
+        global qnc
+        global qfc'''
+
+        '''def assign(value):
+            return int(value)'''
+
+
+
+
+        print(wsc)
+
+        if wsc=="":
+            wsc=float(WS_10_min)
+            wdc=float(WD_10_min)
+            hc=float(Hum_10_min)
+            tc=float(Temp_10_min)
+            DPc=float(DP_10_min)
+#           pc=int(Pres_10_min)
+            qnc=float(QNH_10_min)
+            qfc=float(QFE_10_min)
+            print(wsc)
+        else:
+            print("Check")
+            if int(WD_10_min)==wdc+180 or int(WD_10_min)==wdc-180 :
+                root=Tk()
+                playsound('Alarm.wav')
+                frame=LabelFrame(root,bg="#9ad7fc")
+                frame.pack()
+                output=Label(frame,text="Warning: Wind Direction",font="Verdana 90 ",bg="black",fg="red")
+                output.pack()
+                root.mainloop()
+
+
+
+
+            if int(Temp_10_min)>=tc+20:
+                i=100
+                while(i<=0):
+                    playsound('Alarm.wav')
+                    frame=LabelFrame(root,bg="#9ad7fc")
+                    frame.pack()
+                    output=Label(frame,text="Warning",font="Verdana 15 ",bg="#9ad7fc",fd="red")
+                    output.pack()
+                    i=i-1
+
+                continue
+
+            if float(WS_10_min)>=wsc+10:
+                playsound('Alarm.wav')
+                root=Tk()
+                frame=LabelFrame(root,bg="#9ad7fc")
+                frame.pack()
+                output=Label(frame,text="Warning",font="Verdana 15 ",bg="#9ad7fc",fd="red")
+                output.pack()
+                root.mainloop()
+
+
+            if int(DP_10_min)>=1.1*DPc:
+                playsound('Alarm.wav')
+                root=Tk()
+                frame=LabelFrame(root,bg="#9ad7fc")
+                frame.pack()
+                output=Label(frame,text="Warning",font="Verdana 15 ",bg="#9ad7fc",fd="red")
+                output.pack()
+                root.mainloop()
+
+            if int(QNH_10_min)>=1.1*qnc:
+                playsound('Alarm.wav')
+                root=Tk()
+                frame=LabelFrame(root,bg="#9ad7fc")
+                frame.pack()
+                output=Label(frame,text="Warning",font="Verdana 15 ",bg="#9ad7fc",fd="red")
+                output.pack()
+                root.mainloop()
+
+
+
+            if int(QFE_10_min)>=1.1*qfc*0:
+                playsound('Alarm.wav')
+                root=Tk()
+                frame=LabelFrame(root,bg="#9ad7fc")
+                frame.pack()
+                output=Label(frame,text="Warning, QFE Pressure",font="Verdana 70 ",bg="black",fg="red")
+                output.pack()
+                root.mainloop()
+
+            else:
+                wsc=float(WS_10_min)
+                wdc=float(WD_10_min)
+                hc=float(Hum_10_min)
+                tc=float(Temp_10_min)
+                DPc=float(DP_10_min)
+#                pc=float(Pres_10_min)
+                qnc=float(QNH_10_min)
+                qfc=float(QFE_10_min)
+
+
+
+
+    else:
+        continue
