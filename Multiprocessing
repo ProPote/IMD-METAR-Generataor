@@ -1,0 +1,45 @@
+import socket
+import time
+from tkinter import *
+from inputimeout import inputimeout
+from playsound import playsound
+import multiprocessing
+
+def receive_data(sock):
+    while True:
+        data, addr = sock.recvfrom(1024)
+        if data.decode('utf-8')[0] == "-":
+            break
+        # Process and handle the received data here
+        print("Received data:", data.decode())
+
+def backend1(sock):
+    while True:
+        # Implement the first backend logic here
+        pass
+
+def backend2(sock):
+    while True:
+        # Implement the second backend logic here
+        pass
+
+def start_programs():
+    UDP_IP = "192.168.103.93"
+    UDP_PORT = 5000
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    sock.bind((UDP_IP, UDP_PORT))
+
+    backend1_process = multiprocessing.Process(target=backend1, args=(sock,))
+    backend2_process = multiprocessing.Process(target=backend2, args=(sock,))
+    receive_process = multiprocessing.Process(target=receive_data, args=(sock,))
+
+    backend1_process.start()
+    backend2_process.start()
+    receive_process.start()
+
+    backend1_process.join()
+    backend2_process.join()
+    receive_process.join()
+
+if __name__ == "__main__":
+    start_programs()
