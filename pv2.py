@@ -42,7 +42,7 @@ def backend():
                     GST_Time=data2[20:28]
                     Date=data2[29:31]
                     WS_10_min=data2[61:64]
-                    WD_10_min=data2[86:88]
+                    WD_10_min=data2[83:86]
                     Hum_10_min=data2[107:109]
                     Temp_10_min=data2[130:132]
                     DP_10_min=data2[154:156]
@@ -64,8 +64,14 @@ def backend():
                         time1=time_used[0]+time_used[1]+time_used[3]+time_used[4]
                         check=Date
                         return Date+time1
+                    def wind():
+                        finalspeed = round(float(WS_10_min))
+                        finalwind = str(finalspeed)+str(WD_10_min)+'KT'
+                        if finalspeed < 10:
+                            finalwind = '0' + str(finalspeed)+str(WD_10_min)+'KT'
+                        return finalwind
 
-                    FINAL_METAR=str(typ)+" "+"VAPO "+str(report)+" "+str(finaltempdew)+" "+"Q"+str(QNH_10_min)+" "+"NOSIG="
+                    FINAL_METAR=str(typ)+" "+"VAPO "+str(report)+str(wind())+" "+str(finaltempdew)+" "+"Q"+str(QNH_10_min)+" "+"NOSIG="
 
                     gmt = pytz.timezone('GMT')
                     now = datetime.now(gmt)
@@ -75,7 +81,7 @@ def backend():
                     ws.append([current_time,FINAL_METAR])
                     wb.save("demo.xlsx")
 
-                    myLabel=Label(root,text="Idle"+FINAL_METAR,font="Tektur 25")
+                    myLabel=Label(root,text=FINAL_METAR,font="Tektur 25")
                     myLabel.pack()
 
                     def execute():
@@ -131,7 +137,7 @@ def backend():
                     GST_Time=data2[20:28]
                     Date=data2[29:31]
                     WS_10_min=data2[61:64]
-                    WD_10_min=data2[86:88]
+                    WD_10_min=data2[83:86]
                     Hum_10_min=data2[107:109]
                     Temp_10_min=data2[130:132]
                     DP_10_min=data2[154:156]
@@ -154,8 +160,15 @@ def backend():
                     temp =Temp_10_min
                     dew_pt = DP_10_min
                     finaltempdew = str(temp) + '/' + str(dew_pt)
+                    def wind():
+                        finalspeed = round(float(WS_10_min))
+                        finalwind = str(finalspeed)+str(WD_10_min)+'KT'
+                        if finalspeed < 10:
+                            finalwind = '0' + str(finalspeed)+str(WD_10_min)+'KT'
+                        return finalwind
+
                     report=str(status())+'Z'
-                    FINAL_METAR=str(typ)+" "+ "VAPO "+str(report)+" "+str(cloud_cover())+" "+str(finaltempdew)+" "+"Q"+str(QNH_10_min)+" "+"NOSIG="
+                    FINAL_METAR=str(typ)+" "+ "VAPO "+str(report)+" " +str(wind())+str(cloud_cover())+" "+str(finaltempdew)+" "+"Q"+str(QNH_10_min)+" "+"NOSIG="
 
                     gmt = pytz.timezone('GMT')
                     now = datetime.now(gmt)
@@ -173,7 +186,7 @@ def backend():
                         time.sleep(0)
                     root.after(4000,execute)
 
-                new_button=Button(root,text="Generate Metar",command=onclic,font=('Tektur 15'))
+                new_button=Button(root,text="Generate METAR",command=onclic,font=('Tektur 15'))
                 new_button.pack()
 
                 root.after(10000, end_window)
@@ -185,3 +198,4 @@ def backend():
         frontend()
 
 backend()
+#trend, excel issue
