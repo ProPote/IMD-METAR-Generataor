@@ -6,6 +6,8 @@ import multiprocessing
 import xlsxwriter
 from openpyxl import *
 from openpyxl import Workbook,load_workbook
+from datetime import datetime
+import pytz
 
 #def frontend_initial():
 #FINAL_METAR="ABCD"
@@ -18,7 +20,8 @@ def backend():
     socket.SOCK_DGRAM) # UDP
     sock.bind((UDP_IP, UDP_PORT))
 
-
+    wb = Workbook()
+    ws = wb.active
 
     while True:
 
@@ -95,6 +98,15 @@ def backend():
                     report=str(status())+'Z'
                     FINAL_METAR=str(typ)+" "+str(report)+" "+str(finaltempdew)+" "+"Q"+str(QNH_10_min)+" "+"NOSIG="
 
+
+                    gmt = pytz.timezone('GMT')
+                    now = datetime.now(gmt)
+
+                    current_time = now.strftime("%H:%M:%S")
+
+                    ws.append([current_time,FINAL_METAR])
+                    wb.save("IMD_Data.xlsx")
+
                     myLabel=Label(root,text="Idle METAR"+FINAL_METAR,font="Times 20 bold")
                     myLabel.pack()
 
@@ -105,7 +117,7 @@ def backend():
                     root.after(2000,execute)
                     root.mainloop()
 
-                frame=LabelFrame(root,bg="#9ad7fc")
+                frame=LabelFrame(root,bg="grey")
                 frame.pack()
 
                 output=Label(frame,text="Enter the four cloud terms",font="Verdana 15 ",bg="#9ad7fc")
@@ -136,29 +148,6 @@ def backend():
                 e5.pack()
 
                 output=Label(frame,text="")
-                output.pack()
-
-                frame2=LabelFrame(root,bg="#9ad7fc")
-                frame2.pack()
-
-                output=Label(frame2,text=e2.get())
-                output.pack()
-                output=Label(frame2,text="")
-                output.pack()
-
-                output=Label(frame2,text=e3.get())
-                output.pack()
-
-                output=Label(frame2,text="")
-                output.pack()
-
-                output=Label(frame2,text=e4.get())
-                output.pack()
-
-                output=Label(frame2,text="")
-                output.pack()
-
-                output=Label(frame2,text=e5.get())
                 output.pack()
 
 
@@ -226,6 +215,16 @@ def backend():
                     print(finaltempdew)
                     report=str(status())+'Z'
                     FINAL_METAR=str(typ)+" "+str(report)+" "+str(cloud_cover())+" "+str(finaltempdew)+" "+"Q"+str(QNH_10_min)+" "+"NOSIG="
+
+
+                    gmt = pytz.timezone('GMT')
+                    now = datetime.now(gmt)
+
+                    current_time = now.strftime("%H:%M:%S")
+
+                    ws.append([current_time,FINAL_METAR])
+                    wb.save("IMD_Data.xlsx")
+
 
                     def execute():
                         root.destroy()
