@@ -65,7 +65,7 @@ def backend():
                         check=Date
                         return Date+time1
 
-                    FINAL_METAR=str(typ)+" "+str(report)+" "+str(finaltempdew)+" "+"Q"+str(QNH_10_min)+" "+"NOSIG="
+                    FINAL_METAR=str(typ)+" "+"VAPO "+str(report)+" "+str(finaltempdew)+" "+"Q"+str(QNH_10_min)+" "+"NOSIG="
 
                     gmt = pytz.timezone('GMT')
                     now = datetime.now(gmt)
@@ -145,24 +145,28 @@ def backend():
                     time1=""
                     date=""
                     def status():
-                        #runway=(df.iloc[row,2])
                         time_used=GST_Time
                         time1=time_used[0]+time_used[1]+time_used[3]+time_used[4]
                         check=Date
-
-                        #print(date)
-                        print(Date+time1+"DDDD")
                         return Date+time1
                         #-------------------------------------------------------
                     #temp and dew point temp component
                     temp =Temp_10_min
                     dew_pt = DP_10_min
-                    print(Temp_10_min)
-                    print(DP_10_min)
                     finaltempdew = str(temp) + '/' + str(dew_pt)
-                    print(finaltempdew)
                     report=str(status())+'Z'
-                    FINAL_METAR=str(typ)+" "+str(report)+" "+str(cloud_cover())+" "+str(finaltempdew)+" "+"Q"+str(QNH_10_min)+" "+"NOSIG="
+                    FINAL_METAR=str(typ)+" "+ "VAPO "+str(report)+" "+str(cloud_cover())+" "+str(finaltempdew)+" "+"Q"+str(QNH_10_min)+" "+"NOSIG="
+
+                    gmt = pytz.timezone('GMT')
+                    now = datetime.now(gmt)
+
+                    current_time = now.strftime("%H:%M:%S")
+
+                    ws.append([current_time,FINAL_METAR])
+                    wb.save("demo.xlsx")
+
+                    myLabel2=Label(root,text=FINAL_METAR,font="Tektur 25")
+                    myLabel2.pack()
 
                     def execute():
                         root.destroy()
@@ -176,7 +180,7 @@ def backend():
 
                 root.mainloop()
 
-        time.sleep(20)
+        time.sleep(0)
 
         frontend()
 
