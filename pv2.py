@@ -3,9 +3,13 @@ import time
 from inputimeout import inputimeout
 from playsound import playsound
 import multiprocessing
+import xlsxwriter
+from openpyxl import *
+from openpyxl import Workbook,load_workbook
 
 #def frontend_initial():
 #FINAL_METAR="ABCD"
+
 def backend():
     import socket
     UDP_IP = "192.168.103.93"
@@ -14,10 +18,13 @@ def backend():
     socket.SOCK_DGRAM) # UDP
     sock.bind((UDP_IP, UDP_PORT))
 
+
+
     while True:
 
         def frontend():
             while True:
+
                 data, addr = sock.recvfrom(1024) # buffer size is 1024 bytes
                 if data.decode('utf-8')[0]=="-": #to take the right string
                     break
@@ -25,6 +32,78 @@ def backend():
                 root=Tk()
                 #function to proceed after enterinf the timestamp
                 cloudcover=""
+
+
+                # Function to close the window after the specified duration
+                def end_window():
+                    time.sleep(0)
+                    data2=data.decode('utf-8')
+                    print(data2)
+                    runway_number=data2[8:10]
+                    GST_Time=data2[20:28]
+                    Date=data2[29:31]
+                    WS_10_min=data2[61:64]
+                    WD_10_min=data2[86:88]
+                    print(WD_10_min)
+                    Hum_10_min=data2[107:109]
+                    Temp_10_min=data2[130:132]
+                    DP_10_min=data2[154:156]
+                    Pres_10_min=data2[185:190]
+                    QNH_10_min=data2[215:219]
+                    QFE_10_min=data2[237:240]
+
+                    print(GST_Time)
+                    print(Date)
+                    #declaring all the components of the final METAR Report
+                    METAR=""
+                    report=" "
+                    typ = "METAR"
+                    #-----------------------------------------------------------
+                    #Taking the timestamp for which the user wants the METAR
+                    #Finding the row in the given data which has to be accessed
+                    #row=0
+                    #for i in range(25):
+                    #    if time==df.iloc[i,3]:
+                    #        row=i
+                    #-----------------------------------------------------------
+
+                    #Taking the four terms of cloud cover
+                    #cell_value = df.iloc[row, 28] # cell_value = df.iloc[row_index, column_index]
+                    #pressure=('Q -',cell_value)
+                    #-----------------------------------------------------------
+
+                    #status term which comprises of date,and time in zulu
+                    time1=""
+                    date=""
+                    def status():
+                        #runway=(df.iloc[row,2])
+                        time_used=GST_Time
+                        time1=time_used[0]+time_used[1]+time_used[3]+time_used[4]
+                        check=Date
+
+                        #print(date)
+                        print(Date+time1+"DDDD")
+                        return Date+time1
+                        #-------------------------------------------------------
+                    #temp and dew point temp component
+                    temp =Temp_10_min
+                    dew_pt = DP_10_min
+                    print(Temp_10_min)
+                    print(DP_10_min)
+                    finaltempdew = str(temp) + '/' + str(dew_pt)
+                    print(finaltempdew)
+                    report=str(status())+'Z'
+                    FINAL_METAR=str(typ)+" "+str(report)+" "+str(finaltempdew)+" "+"Q"+str(QNH_10_min)+" "+"NOSIG="
+
+                    myLabel=Label(root,text="Idle METAR"+FINAL_METAR,font="Times 20 bold")
+                    myLabel.pack()
+
+                    def execute():
+                        root.destroy()
+                        time.sleep(0)                                                                                 #to make the window reappear again
+
+                    root.after(2000,execute)
+                    root.mainloop()
 
                 frame=LabelFrame(root,bg="#9ad7fc")
                 frame.pack()
@@ -147,9 +226,13 @@ def backend():
                     print(finaltempdew)
                     report=str(status())+'Z'
                     FINAL_METAR=str(typ)+" "+str(report)+" "+str(cloud_cover())+" "+str(finaltempdew)+" "+"Q"+str(QNH_10_min)+" "+"NOSIG="
-                    print(FINAL_METAR)
-                    myLabel=Label(root,text=FINAL_METAR,font="Times 20 bold")
-                    myLabel.pack()
+
+                    def execute():
+                        root.destroy()
+                        time.sleep(0)
+                    root.after(2000,execute)
+
+
             #root=Tk()
             #myLabel=Label(root,text=FINAL_METAR)
             #myLabel.pack()
@@ -166,6 +249,7 @@ def backend():
 
                 #output.after(10000,perform)
 
+                root.after(5000, end_window)                                                                 #to hold the window for 5 minutes if no action
 
                 root.mainloop()
 
